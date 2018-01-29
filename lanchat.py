@@ -50,25 +50,27 @@ def lanScan():
 	print("\n-------------------------------")
 	print("\n\tLAN Scanner")
 	print("\n-------------------------------")
-	try:
-		while (True):
+	
+	while (True):
+		try:	
 			interface = input("\nEnter interface: ")
 			assert isinstance(interface, str)
-		while (True):
-			ipRange = input("\nEnter IP Address Range:  ")
-			assert isinstance(ipRange, str)
-			if isIpAddress(ipRange):
-				break
-			print ("\nInvalid IP Range")
-		
-		conf.verb = 0
-		ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
-			iface = interface, inter = 0.1)
-	except IOError:
-		print("\nInvalid Interface")
-	except KeyboardInterrupt:
-		print("\nLAN Scanner shutting down...")
-		sys.exit();
+			while (True):
+				ipRange = input("\nEnter IP Address Range:  ")
+				assert isinstance(ipRange, str)
+				if isIpAddress(ipRange):
+					break
+				print ("\nInvalid IP Range")
+			conf.verb = 0
+			ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
+				iface = interface, inter = 0.1)
+			break
+		except IOError:
+			print("\nInvalid Interface")
+			continue
+		except KeyboardInterrupt:
+			print("\nLAN Scanner shutting down...")
+			sys.exit();
 
 	print("\nNow Scanning...")
 
@@ -165,6 +167,23 @@ def help():
 				"transmission. For unicast, enter IP and Port. For broadcast mode set the last " +
 				"byte of IP address to 255 (i.e. 121.16.0.255).\n")
 
-help()
-lanScan()
-udpChat()
+def main():
+	help()
+	decision = ""
+	while True:
+		decision = input("\nScan (press s) or Chat (press c): ").tolower()
+		print("\nPress 'q' to quit program")
+		assert isinstance(decision, str)
+		if decision is "s":
+			lanScan()
+		elif decision is "c":
+			udpChat()
+		elif decision is "q":
+			break
+		else:
+			print("Invalid input")
+	print("Program shutting down...")
+	print("Have a nice day!")
+	
+main()
+
