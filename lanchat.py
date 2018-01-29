@@ -3,7 +3,7 @@ from future.utils import python_2_unicode_compatible
 from builtins import input
 import sys, socket, select
 from sys import argv
-from scapy import *
+from scapy.all import *
 import future
 import builtins
 
