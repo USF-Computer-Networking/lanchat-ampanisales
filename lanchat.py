@@ -3,10 +3,9 @@ from future.utils import python_2_unicode_compatible
 from builtins import input
 import sys, socket, select
 from sys import argv
-from scapy.all import *
+from scapy import *
 import future
 import builtins
-
 
 def isIpRange(range):
 	rangeParts = range.split("/")
@@ -44,7 +43,7 @@ def getMessage():
 		if m == sys.stdin:
 			message = sys.stdin.readline()
 			return message
-	return False
+	return None
 
 # LAN ARP Scanner		
 def lanScan():
@@ -70,10 +69,10 @@ def lanScan():
 	ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
 		iface = interface, inter = 0.1)
 
-	print("\n MAC \t IP")
+	print("\n MAC Address \t IP Address")
 
-	for snd, rcv in ans:
-		print(rcv.sprintf(r"%Ether.src% - %ARP.psrc%"))
+	for send, recv in ans:
+		print(recv.sprintf(r"%Ether.src% - %ARP.psrc%"))
 
 	print("End of scan")
 
@@ -112,7 +111,7 @@ def udpChat():
 		sys.exit();
 
 	# Sets the address to send messages to
-	send_address = (sendHost, port)
+	sendAddress = (sendHost, port)
 
 	# Creates datagram socket for UDP
 	skt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -136,16 +135,16 @@ def udpChat():
 	try:
 		while 1:
 			try:
-				# Buffer size is 8197
-				message, address = skt.recvfrom(8197)
+				# Buffer size is 8000
+				message, address = skt.recvfrom(8000)
 				if message:
 					print(address, "-> ", message)
 			except:
 				pass
 		 
 			message = getMessage();
-			if message != False:
-				skt.sendto(input, send_address)
+			if message != None:
+				skt.sendto(message, sendAddress)
 	except KeyboardInterrupt:
 		print ("\nLeaving UDP Chat...")
 
