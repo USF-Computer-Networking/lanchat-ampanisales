@@ -7,6 +7,12 @@ from scapy.all import *
 import future
 import builtins
 
+# Code for LAN Scanner was inspired by this
+# source: https://null-byte.wonderhowto.com/how-to/build-arp-scanner-using-scapy-and-python-0162731/
+
+# Code for UDP Chat was inspired by this
+# source: https://thecodeninja.net/2014/12/udp-chat-in-python/
+
 def isIpRange(range):
 	rangeParts = range.split("/")
 	if rangeParts[0] == "0" and rangeParts[1] == "24":
@@ -52,55 +58,61 @@ def lanScan():
 	print("\n-------------------------------")
 	
 	while (True):
-		try:	
-			interface = input("\nEnter interface: ")
+		try:
+			print("Press 'q' to quit scanner")	
+			interface = input("Enter interface: ")
 			assert isinstance(interface, str)
+			if interface == "q":
+				return
 			while (True):
 				ipRange = input("\nEnter IP Address Range:  ")
 				assert isinstance(ipRange, str)
+				if ipRange == "q":
+					return
 				if isIpAddress(ipRange):
 					break
 				print ("\nInvalid IP Range")
+			print("\nNow Scanning...")
 			conf.verb = 0
 			ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
 				iface = interface, inter = 0.1)
+			
+			print("\n      MAC Address - IP Address")
+			for send, recv in ans:
+				print(recv.sprintf(r"%Ether.src% - %ARP.psrc%"))
 			break
 		except IOError:
 			print("\nInvalid Interface")
 			continue
 		except KeyboardInterrupt:
 			print("\nLAN Scanner shutting down...")
+			print("Program shutting down...")
 			sys.exit();
-
-	print("\nNow Scanning...")
-
-
-	print("\n \tMAC Address \t IP Address")
-
-	for send, recv in ans:
-		print(recv.sprintf(r"%Ether.src% - %ARP.psrc%"))
-
 	print("End of scan")
 
 # UDP Chat
 def udpChat():
 	print("\n-------------------------------")
 	print("\n\tUDP Chat")
-	print("\n-----------------------------")
+	print("\n-------------------------------")
 
 	print("\nIf (optional), press ENTER to skip")
 
 	try:
 		while (True):
+			print("Press 'q' to quit chat")
 			sendHost = input("Enter recipient IP Address: ")
 			assert isinstance(sendHost, str)
+			if sendHost == "q":
+				return
 			if isIpAddress(sendHost):
 				break
 			print("\nInvalid IP Address/Range")
 
 		portString = input("Enter PORT (optional): ")
 		assert isinstance(portString, str)
-
+		if portString == "q":
+			return
 		if portString == '': # Default port value is 1027
 			port = int("1027", 16) # Hex value is base 16
 		else:
@@ -114,6 +126,7 @@ def udpChat():
 				port = int("1027", 16)
 	except KeyboardInterrupt:
 		print("\nUDP Chat shutting down...")
+		print("Program shutting down...")
 		sys.exit();
 
 	# Sets the address to send messages to
@@ -147,7 +160,7 @@ def udpChat():
 					print(address, "-> ", message)
 			except:
 				pass
-		 
+		 	
 			message = getMessage();
 			if message != None:
 				skt.sendto(message, sendAddress)
@@ -171,19 +184,21 @@ def main():
 	help()
 	decision = ""
 	while True:
-		decision = input("\nScan (press s) or Chat (press c): ").tolower()
-		print("\nPress 'q' to quit program")
-		assert isinstance(decision, str)
-		if decision is "s":
-			lanScan()
-		elif decision is "c":
-			udpChat()
-		elif decision is "q":
+		try:
+			print("\nPress 'q' to quit program")
+			decision = input("LAN Scan (press s) or UDP Chat (press c): ").lower()
+			assert isinstance(decision, str)
+			if decision == "s":
+				lanScan()
+			elif decision == "c":
+				udpChat()
+			elif decision == "q":
+				break
+			else:
+				print("Invalid input")
+		except KeyboardInterrupt:
 			break
-		else:
-			print("Invalid input")
-	print("Program shutting down...")
+	print("\nProgram shutting down...")
 	print("Have a nice day!")
 	
 main()
-
