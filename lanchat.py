@@ -51,25 +51,29 @@ def lanScan():
 	print("\n\tLAN Scanner")
 	print("\n-------------------------------")
 	try:
-		interface = input("\nEnter interface: ")
-		assert isinstance(interface, str)
+		while (True):
+			interface = input("\nEnter interface: ")
+			assert isinstance(interface, str)
 		while (True):
 			ipRange = input("\nEnter IP Address Range:  ")
 			assert isinstance(ipRange, str)
 			if isIpAddress(ipRange):
 				break
 			print ("\nInvalid IP Range")
+		
+		conf.verb = 0
+		ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
+			iface = interface, inter = 0.1)
+	except IOError:
+		print("\nInvalid Interface")
 	except KeyboardInterrupt:
 		print("\nLAN Scanner shutting down...")
 		sys.exit();
 
 	print("\nNow Scanning...")
 
-	conf.verb = 0
-	ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
-		iface = interface, inter = 0.1)
 
-	print("\n MAC Address \t IP Address")
+	print("\n \tMAC Address \t IP Address")
 
 	for send, recv in ans:
 		print(recv.sprintf(r"%Ether.src% - %ARP.psrc%"))
