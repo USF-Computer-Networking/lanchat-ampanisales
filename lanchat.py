@@ -60,7 +60,7 @@ def lanScan():
 	while (True):
 		try:
 			print("Press 'q' to quit scanner")	
-			interface = input("Enter interface: ")
+			interface = input("Enter network interface: ")
 			assert isinstance(interface, str)
 			if interface == "q":
 				return
@@ -183,7 +183,7 @@ def help():
 				"Valid IP address ranges have '0/24' as the last byte of the IP address " +
 				"(e.g. 100.222.3.0/24). The UDP Chat supports unicast and broadcast packet " + 
 				"transmission. For unicast, the user is required to enter the recipient IP Address and " +
-				"optionally, the Port.\n")
+				"optionally, the PORT.\n")
 
 def main():
 	help()
