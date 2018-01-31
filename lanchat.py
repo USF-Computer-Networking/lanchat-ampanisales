@@ -35,6 +35,8 @@ def isIpAddress(address):
 			break
 		if len(n) > 3:
 			return False
+		if len(n) > 1 and n[0] == "0":
+			return False
 		try:
 			test = int(n)
 		except ValueError:
@@ -63,15 +65,17 @@ def lanScan():
 			interface = input("Enter network interface: ")
 			assert isinstance(interface, str)
 			if interface == "q":
+				print("\nLAN Scanner shutting down...")
 				return
 			while (True):
 				ipRange = input("\nEnter IP Address Range:  ")
 				assert isinstance(ipRange, str)
 				if ipRange == "q":
+					print("\nLAN Scanner shutting down...")
 					return
 				if isIpAddress(ipRange):
 					break
-				print ("\nInvalid IP Range")
+				print ("Invalid IP Range")
 			print("\nNow Scanning...")
 			conf.verb = 0
 			ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
@@ -85,7 +89,7 @@ def lanScan():
 			print("\nInvalid Interface\n")
 			continue
 		except KeyboardInterrupt:
-			print("\nLAN Scanner shutting down...")
+			print("\n\nLAN Scanner shutting down...")
 			print("Program shutting down...")
 			sys.exit();
 	print("End of scan")
@@ -99,9 +103,10 @@ def udpChat():
 	try:	
 		while (True):
 			print("Press 'q' to quit chat")
-			chat = input("Broadcast (press 'b') or Unicast (press 'u'): ")
+			chat = input("Broadcast (press 'b') or Unicast (press 'u'): ").lower()
 			assert isinstance(chat, str)
 			if chat == "q":
+				print("\nUDP Chat shutting down...")
 				return
 			elif chat == "b" or chat == "u":
 				break
@@ -112,13 +117,15 @@ def udpChat():
 				sendHost = input("Enter recipient IP Address: ")
 				assert isinstance(sendHost, str)
 				if sendHost == "q":
+					print("\nUDP Chat shutting down...")
 					return
 				if isIpAddress(sendHost):
 					break
-				print("\nInvalid IP Address/Range")
+				print("Invalid IP Address\n")
 			portString = input("Enter PORT (optional): ")
 			assert isinstance(portString, str)
 			if portString == "q":
+				print("\nUDP Chat shutting down...")
 				return
 			if portString == '': # Default port value is 1027
 				port = int("1027", 16) # Hex value is base 16
@@ -133,7 +140,7 @@ def udpChat():
 			port = int("1027", 16)
 			sendAddress = ('<broadcast>', port)
 	except KeyboardInterrupt:
-		print("\nUDP Chat shutting down...")
+		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
 		sys.exit();
 	
