@@ -212,7 +212,6 @@ def help():
 
 def main():
 	help()
-	decision = ""
 	while True:
 		try:
 			print("\nPress 'q' to quit program")
