@@ -163,15 +163,16 @@ def udpChat():
 					print("Invalid port number. Default port will be used")
 					port = int("1027", 16)
 			sendAddress = (sendHost, port)
-			skt.bind((sendHost, port)) # Port is able to accept connections
 		elif chat == "b":
 			port = int("1027", 16)
 			sendAddress = ('<broadcast>', port)
-			skt.bind(('', port)) # Port is able to accept connections
 	except KeyboardInterrupt:
 		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
 		sys.exit();
+
+	# Port is able to accept connections
+	skt.bind(('', port)) 
 
 	print("\nPress 'ctrl + C' to exit chat")
 	print("Accepting connections on port", hex(port))
@@ -191,6 +192,7 @@ def udpChat():
 			if message != None:
 				skt.sendto(message, sendAddress)
 	except KeyboardInterrupt:
+		skt.close()
 		print ("\nLeaving UDP Chat...")
 
 # Checks for help on command line
