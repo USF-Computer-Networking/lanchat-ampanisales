@@ -6,8 +6,8 @@ Author: Anthony Panisales
     - provides a user friendly display of information about each discovered peer
 
  - supports sending text messages carried in UDF packets
-    - supports either unicast or broadcast packet transmission
-    - for unicast, user has to provide a default port and optionally, 
+    - support either unicast or broadcast packet transmission
+    - for either unicast or multicast chat provide a default port and allow optional 
       selection of a different port
     - allows the selection of a specific IP address for the unicast chat
 
@@ -226,5 +226,6 @@ def main():
 			break
 	print("\nProgram shutting down...")
 	print("Have a nice day!")
-	
-main()
+
+if __name__ == '__main__':
+	main()
