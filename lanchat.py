@@ -6,10 +6,10 @@ Author: Anthony Panisales
     - provides a user friendly display of information about each discovered peer
 
  - supports sending text messages carried in UDF packets
-    - support either unicast or broadcast packet transmission
-    - for either unicast or multicast chat provide a default port and allow optional 
-      selection of a different port
-    - allows the selection of a specific IP address for the unicast chat
+    - supports either unicast or broadcast packet transmission
+    - provides a default port but allows the selection of a different port 
+      for the unicast chat
+    - allows the selection of a specific recipient IP address for the unicast chat
 
 - Code for LAN Scanner was inspired by this source: 
 	https://null-byte.wonderhowto.com/how-to/build-arp-scanner-using-scapy-and-python-0162731/
