@@ -1,3 +1,24 @@
+""" lanchat.py
+
+Author: Anthony Panisales
+
+- discovers other computers on the same LAN
+    - provides a user friendly display of information about each discovered peer
+
+ - supports sending text messages carried in UDF packets
+    - support either unicast or broadcast packet transmission
+    - for either unicast or multicast chat provide a default port and allow optional 
+      selection of a different port
+    - allows the selection of a specific IP address for the unicast chat
+
+- Code for LAN Scanner was inspired by this source: 
+	https://null-byte.wonderhowto.com/how-to/build-arp-scanner-using-scapy-and-python-0162731/
+
+- Code for UDP Chat was inspired by this source: 
+	https://thecodeninja.net/2014/12/udp-chat-in-python/
+
+"""
+
 from __future__ import print_function
 from future.utils import python_2_unicode_compatible
 from builtins import input
@@ -6,12 +27,6 @@ from sys import argv
 from scapy.all import *
 import future
 import builtins
-
-# Code for LAN Scanner was inspired by this
-# source: https://null-byte.wonderhowto.com/how-to/build-arp-scanner-using-scapy-and-python-0162731/
-
-# Code for UDP Chat was inspired by this
-# source: https://thecodeninja.net/2014/12/udp-chat-in-python/
 
 def isIpRange(range):
 	rangeParts = range.split("/")
@@ -99,6 +114,18 @@ def udpChat():
 	print("\n-------------------------------")
 	print("\n\tUDP Chat")
 	print("\n-------------------------------")
+
+	# Creates datagram socket for UDP
+	skt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+	# Allows socket to receive incoming broadcasts
+	skt.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) 
+
+	# Makes the socket reusable    
+	skt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+	# Set socket to be non-blocking
+	skt.setblocking(False) 
 	
 	try:	
 		while (True):
@@ -136,28 +163,15 @@ def udpChat():
 					print("Invalid port number. Default port will be used")
 					port = int("1027", 16)
 			sendAddress = (sendHost, port)
+			skt.bind((sendHost, port)) # Port is able to accept connections
 		elif chat == "b":
 			port = int("1027", 16)
 			sendAddress = ('<broadcast>', port)
+			skt.bind(('', port)) # Port is able to accept connections
 	except KeyboardInterrupt:
 		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
 		sys.exit();
-	
-	# Creates datagram socket for UDP
-	skt = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-	# Allows socket to receive incoming broadcasts
-	skt.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) 
-
-	# Makes the socket reusable    
-	skt.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-	# Set socket to be non-blocking
-	skt.setblocking(False) 
-
-	# Port is able to accept connections
-	skt.bind(('', port))
 
 	print("\nPress 'ctrl + C' to exit chat")
 	print("Accepting connections on port", hex(port))
