@@ -2,14 +2,21 @@
 
 Author: Anthony Panisales
 
-- discovers other computers on the same LAN
-    - provides a user friendly display of information about each discovered peer
+- Discovers other computers on the same LAN
+    - Provides a user friendly display of information about each discovered peer
 
- - supports sending text messages carried in UDF packets
-    - supports either unicast or broadcast packet transmission
-    - provides a default port but allows the selection of a different port 
-      for the unicast chat
-    - allows the selection of a specific recipient IP address for the unicast chat
+ - Supports sending text messages carried in UDF packets
+    - Support either unicast or broadcast packet transmission
+    - For either unicast or multicast chat provide a default port and allow optional 
+      selection of a different port
+    - Allows the selection of a specific IP address for the unicast chat
+
+- The LAN Scanner requires the user to enter a network interface and an IP address range. 
+  Valid IP address ranges have '0/24' as the last byte of the IP address (e.g. 100.222.3.0/24). 
+  The UDP Chat supports unicast and broadcast packet transmission. For unicast, the user is required 
+  to enter the recipient IP Address and optionally, the PORT.
+
+- Example usage: python lanchat.py -s
 
 - Code for LAN Scanner was inspired by this source: 
 	https://null-byte.wonderhowto.com/how-to/build-arp-scanner-using-scapy-and-python-0162731/
@@ -27,6 +34,7 @@ from sys import argv
 from scapy.all import *
 import future
 import builtins
+import argparse
 
 def isIpRange(range):
 	rangeParts = range.split("/")
@@ -77,13 +85,13 @@ def lanScan():
 	while (True):
 		try:
 			print("Press 'q' to quit scanner")	
-			interface = input("Enter network interface: ").strip()
+			interface = input("Enter network interface: ")
 			assert isinstance(interface, str)
 			if interface == "q":
 				print("\nLAN Scanner shutting down...")
 				return
 			while (True):
-				ipRange = input("\nEnter IP Address Range:  ").strip()
+				ipRange = input("\nEnter IP Address Range:  ")
 				assert isinstance(ipRange, str)
 				if ipRange == "q":
 					print("\nLAN Scanner shutting down...")
@@ -130,7 +138,7 @@ def udpChat():
 	try:	
 		while (True):
 			print("Press 'q' to quit chat")
-			chat = input("Broadcast (press 'b') or Unicast (press 'u'): ").lower().strip()
+			chat = input("Broadcast (press 'b') or Unicast (press 'u'): ").lower()
 			assert isinstance(chat, str)
 			if chat == "q":
 				print("\nUDP Chat shutting down...")
@@ -141,7 +149,7 @@ def udpChat():
 		if chat == "u":
 			print("\nIf (optional), press ENTER to skip")
 			while (True):
-				sendHost = input("Enter recipient IP Address: ").strip()
+				sendHost = input("Enter recipient IP Address: ")
 				assert isinstance(sendHost, str)
 				if sendHost == "q":
 					print("\nUDP Chat shutting down...")
@@ -149,35 +157,32 @@ def udpChat():
 				if isIpAddress(sendHost):
 					break
 				print("Invalid IP Address\n")
-			portString = input("Enter PORT (optional): ").strip()
+			portString = input("Enter PORT (optional): ")
 			assert isinstance(portString, str)
 			if portString == "q":
 				print("\nUDP Chat shutting down...")
 				return
 			if portString == '': # Default port value is 1027
-				port = 1027
+				port = int("1027", 16) # Hex value is base 16
 			else:
 				try:
-					port = int(portString)
-					if port < 1 or port > 65535:
-						raise ValueError
+					port = int(portString, 16)
 				except ValueError:
 					print("Invalid port number. Default port will be used")
-					port = 1027
+					port = int("1027", 16)
 			sendAddress = (sendHost, port)
+			skt.bind((sendHost, port)) # Port is able to accept connections
 		elif chat == "b":
-			port = 1027
+			port = int("1027", 16)
 			sendAddress = ('<broadcast>', port)
+			skt.bind(('', port)) # Port is able to accept connections
 	except KeyboardInterrupt:
 		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
 		sys.exit();
 
-	# Port is able to accept connections
-	skt.bind(('', port)) 
-
 	print("\nPress 'ctrl + C' to exit chat")
-	print("Accepting connections on port", port)
+	print("Accepting connections on port", hex(port))
 	print("You can start typing now\n")
 
 	try:
@@ -194,28 +199,21 @@ def udpChat():
 			if message != None:
 				skt.sendto(message, sendAddress)
 	except KeyboardInterrupt:
-		skt.close()
 		print ("\nLeaving UDP Chat...")
 
-# Checks for help on command line
-def help():
-	for a in argv:
-		if a == "-h" or a == "--help":
-			print("\n-------------------------------")
-			print("\n\tHelp")
-			print("\n-------------------------------")
-			print("The LAN Scanner requires the user to enter a network interface and an IP address range. " +
-				"Valid IP address ranges have '0/24' as the last byte of the IP address " +
-				"(e.g. 100.222.3.0/24). The UDP Chat supports unicast and broadcast packet " + 
-				"transmission. For unicast, the user is required to enter the recipient IP Address and " +
-				"optionally, the PORT (Range of available PORT numbers: 1-65535).\n")
-
 def main():
-	help()
+	args = parser.parse_args()
 	while True:
 		try:
-			print("\nPress 'q' to quit program")
-			decision = input("LAN Scan (press 's') or UDP Chat (press 'c'): ").lower().strip()
+			if args.scan is not False:
+				decision = "s"
+				args.scan = False
+			elif args.chat is not False:
+				decision = "c"
+				args.chat = False
+			else:
+				print("\nPress 'q' to quit program")
+				decision = input("LAN Scan (press 's') or UDP Chat (press 'c'): ").lower()
 			assert isinstance(decision, str)
 			if decision == "s":
 				lanScan()
@@ -229,6 +227,10 @@ def main():
 			break
 	print("\nProgram shutting down...")
 	print("Have a nice day!")
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--scan', action='store_true', default=False, help="Starts LAN Scanner")
+parser.add_argument('-c', '--chat', action="store_true", default=False, help="Starts UDP Chat")
 
 if __name__ == '__main__':
 	main()
