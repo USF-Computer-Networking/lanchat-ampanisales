@@ -200,6 +200,9 @@ def udpChat():
 		print ("\nLeaving UDP Chat...")
 
 def main():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-s', '--scan', action='store_true', default=False, help="Starts LAN Scanner")
+	parser.add_argument('-c', '--chat', action="store_true", default=False, help="Starts UDP Chat")
 	args = parser.parse_args()
 	while True:
 		try:
@@ -225,10 +228,6 @@ def main():
 			break
 	print("\nProgram shutting down...")
 	print("Have a nice day!")
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-s', '--scan', action='store_true', default=False, help="Starts LAN Scanner")
-parser.add_argument('-c', '--chat', action="store_true", default=False, help="Starts UDP Chat")
 
 if __name__ == '__main__':
 	main()
