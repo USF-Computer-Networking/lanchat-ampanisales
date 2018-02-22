@@ -169,15 +169,15 @@ def udpChat():
 					print("Invalid port number. Default port will be used")
 					port = int("1027", 16)
 			sendAddress = (sendHost, port)
-			skt.bind((sendHost, port)) # Port is able to accept connections
 		elif chat == "b":
 			port = int("1027", 16)
 			sendAddress = ('<broadcast>', port)
-			skt.bind(('', port)) # Port is able to accept connections
 	except KeyboardInterrupt:
 		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
 		sys.exit();
+
+	skt.bind(('', port)) # Port is able to accept connections
 
 	print("\nPress 'ctrl + C' to exit chat")
 	print("Accepting connections on port", hex(port))
@@ -198,6 +198,8 @@ def udpChat():
 				skt.sendto(message, sendAddress)
 	except KeyboardInterrupt:
 		print ("\nLeaving UDP Chat...")
+	except socket.error:
+		print ("\nCould not connect to recipient IP address")
 
 def main():
 	parser = argparse.ArgumentParser()
