@@ -7,8 +7,7 @@ Author: Anthony Panisales
 
  - Supports sending text messages carried in UDF packets
     - Support either unicast or broadcast packet transmission
-    - For either unicast or multicast chat provide a default port and allow optional 
-      selection of a different port
+    - Provides a default port but allows optional selection of a different port for unicast chat
     - Allows the selection of a specific IP address for the unicast chat
 
 - The LAN Scanner requires the user to enter a network interface and an IP address range. 
