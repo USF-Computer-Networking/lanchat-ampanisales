@@ -147,12 +147,12 @@ def udpChat():
 		if chat == "u":
 			print("\nIf (optional), press ENTER to skip")
 			while (True):
-				sendHost = input("Enter recipient IP Address: ")
-				assert isinstance(sendHost, str)
-				if sendHost == "q":
+				recvHost = input("Enter recipient IP Address: ")
+				assert isinstance(recvHost, str)
+				if recvHost == "q":
 					print("\nUDP Chat shutting down...")
 					return
-				if isIpAddress(sendHost):
+				if isIpAddress(recvHost):
 					break
 				print("Invalid IP Address\n")
 			portString = input("Enter PORT (optional): ")
@@ -168,10 +168,10 @@ def udpChat():
 				except ValueError:
 					print("Invalid port number. Default port will be used")
 					port = int("1027", 16)
-			sendAddress = (sendHost, port)
+			recvAddress = (recvHost, port)
 		elif chat == "b":
 			port = int("1027", 16)
-			sendAddress = ('<broadcast>', port)
+			recvAddress = ('<broadcast>', port)
 	except KeyboardInterrupt:
 		print("\n\nUDP Chat shutting down...")
 		print("Program shutting down...")
@@ -195,7 +195,7 @@ def udpChat():
 		 	
 			message = getMessage();
 			if message != None:
-				skt.sendto(message, sendAddress)
+				skt.sendto(message, recvAddress)
 	except KeyboardInterrupt:
 		print ("\nLeaving UDP Chat...")
 	except socket.error:
