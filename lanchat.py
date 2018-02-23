@@ -96,7 +96,7 @@ def lanScan():
 					return
 				if isIpAddress(ipRange):
 					break
-				print ("Invalid IP Range")
+				print("Invalid IP Range")
 			print("\nNow Scanning...")
 			conf.verb = 0
 			ans, unans = srp(Ether(dst = "ff:ff:ff:ff:ff:ff")/ARP(pdst = ipRange), timeout = 2, 
