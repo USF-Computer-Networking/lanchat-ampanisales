@@ -41,16 +41,19 @@ def isIpRange(range):
 	else:
 		return False
 
-def isIpAddress(address):
+def isIpAddress(address, checkRange):
 	if address.count(".") != 3:
 		return False
 	nums = address.split(".")
 	thisIsRange = False
-	if nums[3].count("/") == 1:
-		if not isIpRange(nums[3]):
-			return False
+	if checkRange is True:
+		if nums[3].count("/") == 1:
+			if not isIpRange(nums[3]):
+				return False
+			else:
+				thisIsRange = True
 		else:
-			thisIsRange = True
+			return False
 	for n in nums:
 		if n == nums[3] and thisIsRange:
 			break
@@ -94,7 +97,7 @@ def lanScan():
 				if ipRange == "q":
 					print("\nLAN Scanner shutting down...")
 					return
-				if isIpAddress(ipRange):
+				if isIpAddress(ipRange, True):
 					break
 				print("Invalid IP Range")
 			print("\nNow Scanning...")
@@ -152,7 +155,7 @@ def udpChat():
 				if recvHost == "q":
 					print("\nUDP Chat shutting down...")
 					return
-				if isIpAddress(recvHost):
+				if isIpAddress(recvHost, False):
 					break
 				print("Invalid IP Address\n")
 			portString = input("Enter PORT (optional): ").strip()
@@ -166,7 +169,7 @@ def udpChat():
 				try:
 					port = int(portString)
 					if port < 1 or port > 65535:
--						raise ValueError
+						raise ValueError
 				except ValueError:
 					print("Invalid port number. Default port will be used")
 					port = 1027
@@ -179,7 +182,8 @@ def udpChat():
 		print("Program shutting down...")
 		sys.exit();
 
-	skt.bind(('', port)) # Port is able to accept connections
+	# Port is able to accept connections
+	skt.bind(('', port)) 
 
 	print("\nPress 'ctrl + C' to exit chat")
 	print("Accepting connections on port", port)
