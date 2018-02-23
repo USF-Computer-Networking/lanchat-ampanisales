@@ -197,9 +197,9 @@ def udpChat():
 			if message != None:
 				skt.sendto(message, recvAddress)
 	except KeyboardInterrupt:
-		print ("\nLeaving UDP Chat...")
+		print("\nLeaving UDP Chat...")
 	except socket.error:
-		print ("\nCould not connect to recipient IP address")
+		print("\nCould not connect to recipient IP address")
 
 def main():
 	parser = argparse.ArgumentParser()
