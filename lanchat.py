@@ -71,14 +71,6 @@ def isIpAddress(address, checkRange):
 			return False
 	return True
 
-def getMessage():
-	messages,x,y = select.select([sys.stdin],[],[],0.0001)
-	for m in messages:
-		if m == sys.stdin:
-			message = sys.stdin.readline()
-			return message
-	return None
-
 # LAN ARP Scanner		
 def lanScan():
 	print("\n-------------------------------")
@@ -209,6 +201,14 @@ def udpChat():
 		print("\nLeaving UDP Chat...")
 	except socket.error:
 		print("\nCould not connect to recipient IP address")
+
+def getMessage():
+	messages,x,y = select.select([sys.stdin],[],[],0.0001)
+	for m in messages:
+		if m == sys.stdin:
+			message = sys.stdin.readline()
+			return message
+	return None
 
 def main():
 	parser = argparse.ArgumentParser()
