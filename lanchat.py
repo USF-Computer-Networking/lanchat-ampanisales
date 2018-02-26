@@ -11,8 +11,8 @@ Author: Anthony Panisales
       unicast chat
     - Allows the selection of a specific IP address for the unicast chat
 
-- The LAN Scanner requires the user to enter a network interface and an IP address range. 
-  Valid IP address ranges have '0/24' as the last byte of the IP address (e.g. 100.222.3.0/24).
+- The LAN Scanner requires the user to enter the name of a network interface (e.g. wlan0) and an IP 
+  address range. Valid IP address ranges have '0/24' as the last byte (e.g. 100.222.3.0/24).
   
 - Example usage: python lanchat.py -s
 
@@ -27,12 +27,14 @@ Author: Anthony Panisales
 from __future__ import print_function
 from future.utils import python_2_unicode_compatible
 from builtins import input
-import sys, socket, select
-from sys import argv
 from scapy.all import *
-import future
-import builtins
 import argparse
+import builtins
+import future
+import select
+import socket
+import sys
+
 
 def isIpRange(range):
 	rangeParts = range.split("/")
