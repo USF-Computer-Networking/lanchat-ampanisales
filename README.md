@@ -6,6 +6,6 @@
     - Provides a default port but allows optional selection of a different port for
       unicast chat
     - Allows the selection of a specific IP address for the unicast chat
-- The LAN Scanner requires the user to enter a network interface and an IP address range. 
-  Valid IP address ranges have '0/24' as the last byte of the IP address (e.g. 100.222.3.0/24).
+- The LAN Scanner requires the user to enter the name of a network interface (e.g. wlan0) and an IP 
+  address range. Valid IP address ranges have '0/24' as the last byte (e.g. 100.222.3.0/24).
 - Example usage: python lanchat.py -s
